@@ -7,13 +7,15 @@ export function ExpensesProvider({ children }) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
+	const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
 	// Load initial expenses
 	useEffect(() => {
 		let cancelled = false;
 		(async () => {
 			try {
 				setLoading(true);
-				const res = await fetch('/api/expenses');
+				const res = await fetch(`${API_BASE}/api/expenses`);
 				if (!res.ok) throw new Error('Не удалось загрузить расходы');
 				const data = await res.json();
 				if (!cancelled) setExpenses(data);
@@ -29,7 +31,7 @@ export function ExpensesProvider({ children }) {
 	}, []);
 
 	const addExpense = async (expense) => {
-		const res = await fetch('/api/expenses', {
+		const res = await fetch(`${API_BASE}/api/expenses`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(expense),
@@ -40,7 +42,7 @@ export function ExpensesProvider({ children }) {
 	};
 
 	const deleteExpense = async (id) => {
-		const res = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
+		const res = await fetch(`${API_BASE}/api/expenses/${id}`, { method: 'DELETE' });
 		if (!res.ok) throw new Error('Ошибка при удалении расхода');
 		setExpenses((prev) => prev.filter((e) => e._id !== id));
 	};
