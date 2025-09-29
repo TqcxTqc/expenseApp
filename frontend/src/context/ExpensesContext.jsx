@@ -7,7 +7,18 @@ export function ExpensesProvider({ children }) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
-	const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+	const normalizeBaseUrl = (value) => {
+		if (!value) return "";
+		let v = String(value).trim();
+		if (!/^https?:\/\//i.test(v)) {
+			v = `https://${v}`;
+		}
+		// remove trailing slashes
+		v = v.replace(/\/+$/, "");
+		return v;
+	};
+
+	const API_BASE = normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL || "");
 
 	// Load initial expenses
 	useEffect(() => {
